@@ -1,0 +1,301 @@
+### 1. User tries to create an account and gets error message because email is not valid.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "bako",
+  "email": "bakogmail.com",
+  "password": "123456rR",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because email is not valid and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 2. User tries to create an account and gets error message because password is not valid (Length error).
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "bako",
+  "email": "bako@gmail.com",
+  "password": "123456",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because password is not valid (length error) and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 3. User tries to create an account and gets error message because password is not valid (No upercase error).
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "bako",
+  "email": "bako@gmail.com",
+  "password": "123456bb",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because password is not valid (No uppercase error) and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 4. User tries to create an account and gets error message because password is not valid (No integer error).
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "bako",
+  "email": "bako@gmail.com",
+  "password": "acdvbgbDb",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because password is not valid (No integer error) and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 5. User tries to create an account and gets error message because no username was provided.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "bako@gmail.com",
+  "password": "1cdvbgbDb",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because no username was provided, and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 6. User tries to create an account and gets error message because email was already taken.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "amir",
+  "email": "amir@gmail.com",
+  "password": "1cdvbgbDb",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because email was already taken, and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 7. User tries to create an account and gets error message because no password was provided.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "bako",
+  "email": "bako@gmail.com",
+  "isAdmin": false
+}
+> {%
+ client.test("User tries to create an account and gets error message because no password was provided, and expect bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 8. User Creates an account Successfully.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Tim",
+  "email": "tim@gmail.com",
+  "password": "123456tT",
+  "isAdmin": true
+}
+> {%
+ client.test("User Creates an account Successfully and expect Created response",function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    }
+);
+%}
+### 9. User tries to login and gets a error because user could not be found with the given email.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "bayar@gmail.com",
+  "password": "123456bB"
+}
+> {%
+ client.test("User tries to login and gets a error because user could not be found with the given email, and expects Not found request(404)",function() {
+        client.assert(response.status === 404, "Response status is not 404");
+    }
+);
+%}
+### 10. User tries to login and gets a error because password is incorrect.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "craig@gmail.com",
+  "password": "123456c"
+}
+> {%
+ client.test("User tries to login and gets a error because password is incorrect and expects Unauthorized request(401)",function() {
+        client.assert(response.status === 401, "Response status is not 401");
+    }
+);
+%}
+### 11. User tries to login and gets a error because no password was provided.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "tim@gmail.com"
+}
+> {%
+ client.test("User tries to login and gets a error because no password was provided and expects Not implemented request(501)",function() {
+        client.assert(response.status === 501, "Response status is not 501");
+    }
+);
+%}
+### 12. User Login Successfully.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "tim@gmail.com",
+  "password": "123456tT"
+}
+> {%
+ client.test("User Login Successfully and expects Accepted(202) request",function() {
+        client.assert(response.status === 202, "Response status is not 202");
+    }
+);
+%}
+### 13. Get all users information successfully
+GET http://localhost:5000/users
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("get all users information successfully and expects OK(200) request",function() {
+        client.assert(response.status === 200, "Response status is not 400");
+    }
+);
+%}
+### 14. Get One user information by ID and gets an error message because the Id is not an integer
+GET http://localhost:5000/users/asklj
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("get One user information by ID, but gets a error message because the Id is not an integer and expects Bad request (400)",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 15. Get One user information by ID and gets an error message because the user is not logged in (we don't have a token)
+GET http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get One user information by ID, but gets a error message because the user is not logged in and expects Unauthorized request (401)",function() {
+        client.assert(response.status === 401, "Response status is not 401");
+    }
+);
+%}
+### 16. Get One user information by ID and gets an error message because No user exists with the given ID
+GET http://localhost:5000/users/66
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("get One user information by ID and gets an error message because No user exists with the given ID, and expects Not found(404) response",function() {
+        client.assert(response.status === 404, "Response status is not 404");
+    }
+);
+%}
+### 17. Get One user information by ID Successfully
+GET http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("get One user information by ID Successfully and expects OK (200) response ",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 18. User updates email and gets an error message because the new email already exists
+PUT http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+{
+  "name": "Tim",
+  "email": "tim@gmail.com"
+}
+
+> {%
+ client.test("User updates email and gets an error message because the new email already exists and expects a bac request(400)",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 19. User updates information Successfully
+PUT http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+{
+  "name": "bawand",
+  "email": "bawand@gmail.com"
+}
+
+> {%
+ client.test("Update user information Successfully and expects OK response",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 20. User account has been deleted Successfully
+DELETE http://localhost:5000/users/3
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("User account has been deleted Successfully and expects OK response",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+
+
+

@@ -1,0 +1,122 @@
+### 1. Get all books information successfully
+GET http://localhost:5000/books
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get all books information successfully and expects OK(200) request",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 2. Get One book information by ID and gets an error message because the Id is not an integer
+GET http://localhost:5000/books/asklj
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get One book information by ID, but gets a error message because the Id is not an integer and expects Bad request (400)",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 3. Get One book information by ID and gets an error message because No book exists with the given ID
+GET http://localhost:5000/books/10
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get One book information by ID and gets an error message because No book exists with the given ID, and expects Not found(404) response",function() {
+        client.assert(response.status === 404, "Response status is not 404");
+    }
+);
+%}
+### 4. Get One book information by ID Successfully
+GET http://localhost:5000/books/1
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get One book information by ID Successfully and expects OK (200) response ",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 5. Posting a new book but receives an error message because bookName information was not added
+POST http://localhost:5000/books
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+{
+  "authorName": "John Dorian",
+  "price": 100
+}
+
+> {%
+ client.test("Posting a new book but receives an error message because bookName information was not added and expects 400 bad request",function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    }
+);
+%}
+### 6. Posting a book Successfully and receives a start and end date automatically, and an empty space for highestBid so it can be filled later by bidders, and an empty array of the offers the book got because its newly posted.
+POST http://localhost:5000/books
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+{
+  "bookName": "Life and Death",
+  "authorName": "Known",
+  "price": 60
+}
+
+> {%
+ client.test("Posting a book successfully and expects Created request(201)",function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    }
+);
+%}
+### 7. Updating book information Successfully and receives new start and end date automatically.
+PUT http://localhost:5000/books/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+{
+  "bookName": "Life and Death",
+  "authorName": "unKnown",
+  "price": 20
+}
+
+> {%
+ client.test("Posting a book successfully and expects OK request(200)",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 8. Deleting a book and receives an error message because the ID does not exist
+DELETE http://localhost:5000/books/6
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("Deleting a book and receives an error message because the ID does not exist and expects Not found response",function() {
+        client.assert(response.status === 404, "Response status is not 404");
+    }
+);
+%}
+### 9. Book has been deleted Successfully
+DELETE http://localhost:5000/books/2
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("Book has been deleted Successfully and expects OK response",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+

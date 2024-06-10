@@ -1,0 +1,127 @@
+### 1. User Creates an admin account Successfully.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "craig",
+  "email": "craig@gmail.com",
+  "password": "123456cC",
+  "isAdmin": true
+}
+> {%
+ client.test("User Creates an admin account Successfully and expect Created response",function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    }
+);
+%}
+### 2. User Creates a normal user account Successfully.
+POST http://localhost:5000/users/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "jacques",
+  "email": "jacques@gmail.com",
+  "password": "123456jJ",
+  "isAdmin": false
+}
+> {%
+ client.test("User Creates a normal user account Successfully and expect Created response",function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    }
+);
+%}
+### 3. Admin user Login Successfully.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "craig@gmail.com",
+  "password": "123456cC"
+}
+> {%
+ client.test("Admin Login Successfully and expects Accepted(202) request",function() {
+        client.assert(response.status === 202, "Response status is not 202");
+    }
+);
+%}
+### 4. Normal user Login Successfully.
+POST http://localhost:5000/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "jacques@gmail.com",
+  "password": "123456jJ"
+}
+> {%
+ client.test("Normal User Login Successfully and expects Accepted(202) request",function() {
+        client.assert(response.status === 202, "Response status is not 202");
+    }
+);
+%}
+### 5. Get One user information by ID and gets an error message because you don't have a token
+GET http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+
+> {%
+ client.test("get One user information by ID, but gets a error message because the user does not have a token (not logged in) and expects Unauthorized request (401)",function() {
+        client.assert(response.status === 401, "Response status is not 401");
+    }
+);
+%}
+### 6. Get One user information by ID and gets an error message because the provided token is incorrect
+GET http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJlbWFpbCI6ImNyYWlnQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGZFWEovY2thb2Z4YjVKWFNZVFZCV3U2WHI3TVFIL0RLb01JVk1wNEM4ZS5FaFBSWHpGMDlLIiwiaWF0IjoxNjcyNjE1NTQ2LCJleHAiOjE2NzI3MTU1NDZ9.PhMb0yrIGYPoQjVYVWG_Plzmi3y8v6fdV1I_vK3lTu4
+
+> {%
+ client.test("get One user information by ID, but gets a error message because the provided token is incorrect",function() {
+        client.assert(response.status === 403, "Response status is not 403");
+    }
+);
+%}
+### 7. Get One user information by ID successfully because the provided token was correct
+GET http://localhost:5000/users/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("Get One user information by ID successfully because the provided token was correct",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 8. Get all users information successfully because the token is from an Admin account
+GET http://localhost:5000/users
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("Get all users information successfully because the token is from an Admin account",function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    }
+);
+%}
+### 9. Unable to Get all users information because the token is from an normal user
+GET http://localhost:5000/users
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {token}
+
+> {%
+ client.test("Get One user information by ID successfully because the provided token was correct",function() {
+        client.assert(response.status === 403, "Response status is not 403");
+    }
+);
+%}
+
+
+
+#### I used these tests above as an example to show the end points of the authentication and to check the user role is allowed to perform an action or not.
